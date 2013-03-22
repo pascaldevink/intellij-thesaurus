@@ -5,10 +5,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.JBPopupListener;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
-import com.intellij.openapi.ui.popup.PopupChooserBuilder;
+import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -20,43 +18,29 @@ import com.intellij.ui.components.JBList;
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class ThesaurusAction extends AnAction {
+public class ThesaurusAction extends AnAction
+{
     public void actionPerformed(AnActionEvent e) {
-        PsiElement psiElement = getPsiElement(e);
-
-        JBList synonyms = downloadSynonyms(psiElement.getText());
-
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        PopupChooserBuilder popupBuilder = JBPopupFactory.getInstance().createListPopupBuilder(synonyms);
-        popupBuilder.addListener(new JBPopupListener() {
-            @Override
-            public void beforeShown(LightweightWindowEvent lightweightWindowEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+        PsiElement psiElement = getPsiElement(e, editor);
 
-            @Override
-            public void onClosed(LightweightWindowEvent lightweightWindowEvent) {
-                System.out.println("dsds");
-            }
-        });
-        popupBuilder.setItemChoosenCallback(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("dkjhfkfj");
-            }
-        });
-        popupBuilder.createPopup().showInBestPositionFor(editor);
+        ArrayList synonyms = downloadSynonyms(psiElement.getText());
+
+        ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(
+                new ThesaurusListPopupStep("Thesaurus", synonyms.toArray(), psiElement, editor)
+        );
+        listPopup.showInBestPositionFor(editor);
     }
 
     @Override
     public void update(AnActionEvent e) {
-        PsiElement psiElement = getPsiElement(e);
+        Editor editor = e.getData(PlatformDataKeys.EDITOR);
+        PsiElement psiElement = getPsiElement(e, editor);
         e.getPresentation().setEnabled(psiElement != null);
     }
 
-    private PsiElement getPsiElement(AnActionEvent e) {
+    private PsiElement getPsiElement(AnActionEvent e, Editor editor) {
         PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
-        Editor editor = e.getData(PlatformDataKeys.EDITOR);
 
         if (psiFile == null || editor == null)
         {
@@ -66,7 +50,7 @@ public class ThesaurusAction extends AnAction {
         int offset = editor.getCaretModel().getOffset();
         PsiElement elementAt = psiFile.findElementAt(offset);
 
-        if (elementAt.getNode().getElementType() != ElementType.IDENTIFIER)
+        if (elementAt == null || elementAt.getNode() == null || elementAt.getNode().getElementType() != ElementType.IDENTIFIER)
         {
             return null;
         }
@@ -79,14 +63,12 @@ public class ThesaurusAction extends AnAction {
         return elementAt;
     }
 
-    private JBList downloadSynonyms(String originalText)
+    private ArrayList downloadSynonyms(String originalText)
     {
         ArrayList<String> synonyms = new ArrayList<String>();
         synonyms.add("fetch");
         synonyms.add("download");
 
-        JBList synonymList = new JBList(synonyms);
-
-        return synonymList;
+        return synonyms;
     }
 }
