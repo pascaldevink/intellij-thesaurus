@@ -22,8 +22,6 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
 
     @Override
     public PopupStep onChosen(Object selectedValue, boolean finalChoice) {
-        System.out.println(selectedValue);
-
         if (!finalChoice)
             return super.onChosen(selectedValue, finalChoice);
 

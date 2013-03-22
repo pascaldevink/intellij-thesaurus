@@ -5,41 +5,47 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.ui.popup.*;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.intellij.psi.PsiClass;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.ElementType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.components.JBList;
 
-import javax.swing.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
 
 public class ThesaurusAction extends AnAction
 {
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(AnActionEvent e)
+    {
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
         PsiElement psiElement = getPsiElement(e, editor);
 
-        ArrayList synonyms = downloadSynonyms(psiElement.getText());
+        try
+        {
+            List<String> synonyms = downloadSynonyms(psiElement.getText());
 
-        ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(
-                new ThesaurusListPopupStep("Thesaurus", synonyms.toArray(), psiElement, editor)
-        );
-        listPopup.showInBestPositionFor(editor);
+            ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(
+                    new ThesaurusListPopupStep("Thesaurus", synonyms.toArray(), psiElement, editor)
+            );
+            listPopup.showInBestPositionFor(editor);
+        }
+        catch (IOException ioe)
+        {
+            System.out.println("Exception! " + ioe.getMessage());
+        }
     }
 
     @Override
-    public void update(AnActionEvent e) {
+    public void update(AnActionEvent e)
+    {
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
         PsiElement psiElement = getPsiElement(e, editor);
         e.getPresentation().setEnabled(psiElement != null);
     }
 
-    private PsiElement getPsiElement(AnActionEvent e, Editor editor) {
+    private PsiElement getPsiElement(AnActionEvent e, Editor editor)
+    {
         PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
 
         if (psiFile == null || editor == null)
@@ -63,11 +69,10 @@ public class ThesaurusAction extends AnAction
         return elementAt;
     }
 
-    private ArrayList downloadSynonyms(String originalText)
+    private List<String> downloadSynonyms(String originalWord) throws IOException
     {
-        ArrayList<String> synonyms = new ArrayList<String>();
-        synonyms.add("fetch");
-        synonyms.add("download");
+        ThesaurusDownloader downloader = new AltervistaThesaurusDownloader();
+        List<String> synonyms = downloader.downloadThesaurusList(originalWord);
 
         return synonyms;
     }
