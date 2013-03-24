@@ -1,4 +1,4 @@
-package net.tweakers.intellij.thesaurus;
+package net.tweakers.intellij.thesaurus.action;
 
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.openapi.editor.Editor;

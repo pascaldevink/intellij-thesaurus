@@ -1,4 +1,4 @@
-package net.tweakers.intellij.thesaurus;
+package net.tweakers.intellij.thesaurus.downloader;
 
 import org.apache.commons.httpclient.HttpException;
 import org.json.simple.JSONArray;
@@ -18,7 +18,12 @@ import java.util.List;
 public class AltervistaThesaurusDownloader implements ThesaurusDownloader
 {
     final String endpoint = "http://thesaurus.altervista.org/thesaurus/v1";
-    final String key = "YPSfBhcOtZL8zH1tbiEv";
+    private String key = "";
+
+    public AltervistaThesaurusDownloader(String apiKey)
+    {
+        this.key = apiKey;
+    }
 
     @Override
     public List<String> downloadThesaurusList(String originalWord) throws IOException
@@ -37,7 +42,7 @@ public class AltervistaThesaurusDownloader implements ThesaurusDownloader
 
         int rc = connection.getResponseCode();
         if (rc != 200) {
-            throw new HttpException("Expected status 200, got " + rc);
+            throw new HttpException("No result found");
         }
 
         String line = null;
@@ -61,7 +66,6 @@ public class AltervistaThesaurusDownloader implements ThesaurusDownloader
 
         for (int i=0; i < array.size(); i++) {
             JSONObject list = (JSONObject) ((JSONObject)array.get(i)).get("list");
-            System.out.println(list.get("category")+":"+list.get("synonyms"));
             String partialSynonyms = (String)list.get("synonyms");
 
             synonyms.addAll(explodeSynonyms(partialSynonyms));

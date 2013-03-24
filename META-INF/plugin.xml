@@ -26,6 +26,15 @@
 
   <application-components>
     <!-- Add your application components here -->
+      <component>
+          <implementation-class>net.tweakers.intellij.thesaurus.config.ConfigValues</implementation-class>
+          <interface-class>net.tweakers.intellij.thesaurus.config.ConfigValues</interface-class>
+      </component>
+      <component>
+          <implementation-class>net.tweakers.intellij.thesaurus.config.PluginConfiguration</implementation-class>
+          <interface-class>net.tweakers.intellij.thesaurus.config.PluginConfiguration</interface-class>
+          <option name="workspace" value="true"/>
+      </component>
   </application-components>
 
   <project-components>
@@ -34,7 +43,7 @@
 
   <actions>
     <!-- Add your actions here -->
-      <action id="lookupThesaurus" class="net.tweakers.intellij.thesaurus.ThesaurusAction" text="Thesaurus..."
+      <action id="lookupThesaurus" class="net.tweakers.intellij.thesaurus.action.ThesaurusAction" text="Thesaurus..."
               description="Looksup a synonym of a selected word using a thesaurus">
           <add-to-group group-id="RefactoringMenu" anchor="last"/>
       </action>
