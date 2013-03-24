@@ -2,6 +2,7 @@ package net.tweakers.intellij.thesaurus.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum ThesaurusApiClass {
     AlterVista("AlterVista"),
@@ -29,5 +30,10 @@ public enum ThesaurusApiClass {
     public static ThesaurusApiClass getThesaurusApiClassByLabel(String label)
     {
         return lookupMap.get(label);
+    }
+
+    public static Set<String> getLabels()
+    {
+        return lookupMap.keySet();
     }
 }

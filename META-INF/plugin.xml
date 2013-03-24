@@ -2,16 +2,15 @@
   <id>net.tweakers.intellij.thesaurus</id>
   <name>Thesaurus</name>
   <version>1.0</version>
-  <vendor email="pascal@tweakers.net" url="http://www.tweakers.net">Tweakers</vendor>
+  <vendor email="pascal.de.vink@gmail.com" url="http://www.privatevoid.nl">Pascal de Vink</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+      Lookup a synonym for the word under the cursor for easier naming of your variable,
+      parameters, methods and classes using one of the two supportd online thesaurus providers.
       ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      First version
       ]]>
   </change-notes>
 
@@ -20,9 +19,7 @@
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
-  <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
-  -->
 
   <application-components>
     <!-- Add your application components here -->

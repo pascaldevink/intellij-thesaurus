@@ -30,11 +30,10 @@ public class ThesaurusAction extends AnAction
     public void actionPerformed(AnActionEvent e)
     {
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        PsiElement psiElement = getPsiElement(e, editor);
-
         if (editor == null)
             return;
 
+        PsiElement psiElement = getPsiElement(e, editor);
         String originalWord = psiElement.getText();
 
         try
@@ -42,7 +41,7 @@ public class ThesaurusAction extends AnAction
             List<String> synonyms = downloadSynonyms(originalWord);
 
             ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(
-                    new ThesaurusListPopupStep("Thesaurus", synonyms.toArray(), psiElement, editor)
+                new ThesaurusListPopupStep("Thesaurus", synonyms.toArray(), psiElement, editor)
             );
             listPopup.showInBestPositionFor(editor);
         }

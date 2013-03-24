@@ -52,10 +52,11 @@ public class PluginConfiguration implements Configurable, PersistentStateCompone
     @Override
     public boolean isModified()
     {
-        Object selectedItem = configPanel.thesaurusApiClass.getSelectedItem();
-        return
-                !configPanel.apiKey.equals(configValues.apiKey) ||
+        String selectedItem = (String)configPanel.thesaurusApiClass.getSelectedItem();
+        boolean isModified = !configPanel.apiKey.getText().equals(configValues.apiKey) ||
                 !selectedItem.equals(configValues.thesaurusApiClass.getLabel());
+
+        return isModified;
     }
 
     @Override

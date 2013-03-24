@@ -25,7 +25,6 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
         if (!finalChoice)
             return super.onChosen(selectedValue, finalChoice);
 
-
         if (!CodeInsightUtil.preparePsiElementsForWrite(psiElement)) {
             return super.onChosen(selectedValue, finalChoice);
         }

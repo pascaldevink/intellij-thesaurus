@@ -11,7 +11,9 @@ public class ConfigPanel
 
     public ConfigPanel()
     {
-        thesaurusApiClass.addItem("AlterVista");
-        thesaurusApiClass.addItem("Big Huge Thesaurus");
+        for(String label: ThesaurusApiClass.getLabels())
+        {
+            thesaurusApiClass.addItem(label);
+        }
     }
 }

@@ -21,11 +21,9 @@ public class ConfigValues implements ApplicationComponent {
 
     @Override
     public void initComponent() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void disposeComponent() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

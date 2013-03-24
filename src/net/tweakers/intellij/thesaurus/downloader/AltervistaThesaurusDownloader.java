@@ -1,60 +1,28 @@
 package net.tweakers.intellij.thesaurus.downloader;
 
-import org.apache.commons.httpclient.HttpException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class AltervistaThesaurusDownloader implements ThesaurusDownloader
+public class AltervistaThesaurusDownloader extends AbstractDownloader
 {
-    final String endpoint = "http://thesaurus.altervista.org/thesaurus/v1";
-    private String key = "";
+    private static final String endpoint = "http://thesaurus.altervista.org/thesaurus/v1";
 
-    public AltervistaThesaurusDownloader(String apiKey)
-    {
-        this.key = apiKey;
+    public AltervistaThesaurusDownloader(String apiKey) {
+        super(apiKey);
     }
 
     @Override
-    public List<String> downloadThesaurusList(String originalWord) throws IOException
+    protected String buildUrl(String originalWord) throws UnsupportedEncodingException
     {
-        String serverResponse = this.download(originalWord);
-        List<String> synonyms = this.parseRawJsonToSynonymsList(serverResponse);
-
-        return synonyms;
-    }
-
-    protected String download(String originalWord) throws IOException {
-        URL serverAddress = new URL(endpoint + "?word="+ URLEncoder.encode(originalWord, "UTF-8")+"&language=en_US&key="+key+"&output=json");
-
-        HttpURLConnection connection = (HttpURLConnection)serverAddress.openConnection();
-        connection.connect();
-
-        int rc = connection.getResponseCode();
-        if (rc != 200) {
-            throw new HttpException("No result found");
-        }
-
-        String line = null;
-        BufferedReader br = new BufferedReader(new java.io.InputStreamReader(connection.getInputStream()));
-        StringBuilder sb = new StringBuilder();
-
-        while ((line = br.readLine()) != null)
-            sb.append(line + '\n');
-
-        connection.disconnect();
-
-        return sb.toString();
+        return endpoint + "?word="+ URLEncoder.encode(originalWord, "UTF-8")+"&language=en_US&key="+apiKey+"&output=json";
     }
 
     protected List<String> parseRawJsonToSynonymsList(String rawJson)
