@@ -1,4 +1,4 @@
-package net.tweakers.intellij.thesaurus.downloader;
+package nl.pascaldevink.intellij.thesaurus.downloader;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class AltervistaThesaurusDownloader extends AbstractDownloader
@@ -48,13 +47,10 @@ public class AltervistaThesaurusDownloader extends AbstractDownloader
         List<String> synonymList = new ArrayList<String>();
         Collections.addAll(synonymList, synonyms);
 
-        for (Iterator<String> iterator = synonymList.iterator(); iterator.hasNext();)
-        {
-            String synonym = iterator.next();
-            if (synonym.contains("("))
-            {
+        for (String synonym : synonymList) {
+            if (synonym.contains("(")) {
                 int index = synonymList.indexOf(synonym);
-                synonym = synonym.substring(0, synonym.indexOf("(")-1).trim();
+                synonym = synonym.substring(0, synonym.indexOf("(") - 1).trim();
                 synonymList.set(index, synonym);
             }
         }

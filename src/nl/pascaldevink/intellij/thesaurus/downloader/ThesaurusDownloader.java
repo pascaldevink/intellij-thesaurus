@@ -1,4 +1,4 @@
-package net.tweakers.intellij.thesaurus.downloader;
+package nl.pascaldevink.intellij.thesaurus.downloader;
 
 import java.io.IOException;
 import java.util.ArrayList;

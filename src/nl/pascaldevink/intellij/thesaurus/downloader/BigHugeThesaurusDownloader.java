@@ -1,4 +1,4 @@
-package net.tweakers.intellij.thesaurus.downloader;
+package nl.pascaldevink.intellij.thesaurus.downloader;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
