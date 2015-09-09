@@ -1,5 +1,6 @@
 package nl.pascaldevink.intellij.thesaurus.action;
 
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -7,16 +8,24 @@ import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.refactoring.RefactoringFactory;
+import com.intellij.refactoring.RenameRefactoring;
+import com.intellij.refactoring.openapi.impl.RefactoringFactoryImpl;
+import com.intellij.usageView.UsageInfo;
 import org.jetbrains.annotations.Nullable;
 
 public class ThesaurusListPopupStep extends BaseListPopupStep
 {
     protected Editor editor;
+    private PsiFile psiFile;
 
-    public ThesaurusListPopupStep(@Nullable String aTitle, Object[] aValues, Editor editor) {
+    public ThesaurusListPopupStep(@Nullable String aTitle, Object[] aValues, Editor editor, PsiFile psiFile) {
         super(aTitle, aValues);
 
         this.editor = editor;
+        this.psiFile = psiFile;
     }
 
     @Override
@@ -25,6 +34,14 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
             return super.onChosen(selectedValue, finalChoice);
         }
 
+//        replaceWordSimple((CharSequence) selectedValue);
+        replaceWordRefactoring((String) selectedValue);
+
+        return super.onChosen(selectedValue, finalChoice);
+    }
+
+    private void replaceWordSimple(final CharSequence selectedValue)
+    {
         final Project project = editor.getProject();
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
@@ -36,17 +53,31 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();
 
-        Runnable runnable = new Runnable() {
+        Runnable runnable = new Runnable()
+        {
             @Override
-            public void run() {
-                document.replaceString(start, end, (CharSequence) selectedValue);
+            public void run()
+            {
+                document.replaceString(start, end, selectedValue);
             }
         };
 
         //Making the replacement
         WriteCommandAction.runWriteCommandAction(project, runnable);
         selectionModel.removeSelection();
+    }
 
-        return super.onChosen(selectedValue, finalChoice);
+    private void replaceWordRefactoring(String selectedValue)
+    {
+        final Project project = editor.getProject();
+
+        int offset = editor.getCaretModel().getOffset();
+        PsiElement elementAt = psiFile.findElementAt(offset);
+
+        RefactoringFactory refactoringFactory = RefactoringFactoryImpl.getInstance(project);
+        RenameRefactoring rename = refactoringFactory.createRename(elementAt.getParent(), selectedValue);
+
+        UsageInfo[] usages = rename.findUsages();
+        rename.doRefactoring(usages);
     }
 }
