@@ -1,16 +1,26 @@
 <idea-plugin version="2">
     <id>net.tweakers.intellij.thesaurus</id>
     <name>Thesaurus</name>
-    <version>1.0</version>
+    <version>2.0</version>
     <vendor email="pascal.de.vink@gmail.com" url="https://github.com/pascaldevink">Pascal de Vink</vendor>
 
     <description><![CDATA[
+      <h1>Thesaurus</h1>
+
       Lookup a synonym for the word under the cursor for easier naming of your variable,
       parameters, methods and classes. Can be used to replace text in a variable, or during renaming.
       ]]></description>
 
     <change-notes><![CDATA[
-      First version
+        <b>2.0</b>
+        <ul>
+            <li>Complete overhaul with added support for PHPStorm on top of IntelliJ IDEA.</li>
+        </ul>
+
+        <b>1.0</b>
+        <ul>
+            <li>First version</li>
+        </ul>
       ]]>
     </change-notes>
 
