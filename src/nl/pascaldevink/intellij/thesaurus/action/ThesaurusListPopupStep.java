@@ -28,7 +28,10 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
         final Project project = editor.getProject();
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
-        selectionModel.selectWordAtCaret(true);
+
+        if (!selectionModel.hasSelection()) {
+            selectionModel.selectWordAtCaret(true);
+        }
 
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();

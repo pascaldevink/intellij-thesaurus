@@ -1,7 +1,6 @@
 package nl.pascaldevink.intellij.thesaurus.action;
 
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -16,8 +15,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.ElementType;
 import com.intellij.psi.tree.IElementType;
+import com.jetbrains.php.lang.lexer.PhpTokenTypes;
+import com.jetbrains.php.lang.psi.PhpElementType;
 import nl.pascaldevink.intellij.thesaurus.config.Configuration;
-import nl.pascaldevink.intellij.thesaurus.downloader.MashapeDownloader;
+import nl.pascaldevink.intellij.thesaurus.downloader.BigHugeThesaurusDownloader;
 import nl.pascaldevink.intellij.thesaurus.downloader.ThesaurusDownloader;
 
 import java.io.IOException;
@@ -38,9 +39,7 @@ public class ThesaurusAction extends AnAction
         if (false == isRenameAllowed(e, editor))
             return;
 
-        SelectionModel selectionModel = editor.getSelectionModel();
-        selectionModel.selectWordAtCaret(true);
-        String originalWord = selectionModel.getSelectedText();
+        String originalWord = getOriginalWord(editor);
 
         try
         {
@@ -55,7 +54,6 @@ public class ThesaurusAction extends AnAction
         {
             System.out.println("Exception! " + ioe.getMessage());
             Notification notification = new Notification("Thesaurus", "Thesaurus", "No synonyms available for '"+originalWord+"'", NotificationType.ERROR);
-            Notifications.Bus.register("Thesaurus", NotificationDisplayType.BALLOON);
             Notifications.Bus.notify(notification, editor.getProject());
         }
     }
@@ -67,6 +65,18 @@ public class ThesaurusAction extends AnAction
         e.getPresentation().setEnabled(isRenameAllowed(e, editor));
     }
 
+    private String getOriginalWord(Editor editor)
+    {
+        SelectionModel selectionModel = editor.getSelectionModel();
+
+        if (selectionModel.hasSelection()) {
+            return selectionModel.getSelectedText();
+        }
+
+        selectionModel.selectWordAtCaret(true);
+        return selectionModel.getSelectedText();
+    }
+
     private boolean isRenameAllowed(AnActionEvent e, Editor editor)
     {
         PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
@@ -76,25 +86,37 @@ public class ThesaurusAction extends AnAction
             return false;
         }
 
+        if (editor.getSelectionModel().hasSelection()) {
+            return true;
+        }
+
         int offset = editor.getCaretModel().getOffset();
         PsiElement elementAt = psiFile.findElementAt(offset);
 
         if (elementAt == null || elementAt.getNode() == null)
             return false;
 
-//        System.out.println(elementAt.getNode().getElementType().toString());
-
-        IElementType elementType = elementAt.getNode().getElementType();
-        if (elementType != ElementType.STRING_LITERAL)
-        {
-            return false;
+        if (elementAt.getNode().getElementType() instanceof PhpElementType) {
+            IElementType elementType = elementAt.getNode().getElementType();
+            if (elementType != PhpTokenTypes.VARIABLE_NAME &&
+                elementType != PhpTokenTypes.STRING_LITERAL &&
+                elementType != PhpTokenTypes.STRING_LITERAL_SINGLE_QUOTE)
+            {
+                return false;
+            }
+        } else {
+            IElementType elementType = elementAt.getNode().getElementType();
+            if (elementType != ElementType.STRING_LITERAL)
+            {
+                return false;
+            }
         }
 
         return true;
     }
 
     private List<String> downloadSynonyms(String originalWord) throws IOException {
-        ThesaurusDownloader downloader = new MashapeDownloader(Configuration.MASHAPE_API_KEY);
+        ThesaurusDownloader downloader = new BigHugeThesaurusDownloader(Configuration.BIG_HUGE_THESAURUS_API_KEY);
         List<String> synonyms = downloader.downloadThesaurusList(originalWord);
 
         return synonyms;

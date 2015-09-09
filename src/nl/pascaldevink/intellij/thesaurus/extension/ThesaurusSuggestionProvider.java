@@ -5,8 +5,9 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
 import com.intellij.util.containers.ContainerUtil;
+import com.jetbrains.php.lang.PhpLanguage;
 import nl.pascaldevink.intellij.thesaurus.config.Configuration;
-import nl.pascaldevink.intellij.thesaurus.downloader.MashapeDownloader;
+import nl.pascaldevink.intellij.thesaurus.downloader.BigHugeThesaurusDownloader;
 import nl.pascaldevink.intellij.thesaurus.downloader.ThesaurusDownloader;
 import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
@@ -26,12 +27,16 @@ public class ThesaurusSuggestionProvider implements NameSuggestionProvider
             text = ((PsiNamedElement)element).getName();
         }
 
+        if (element.getLanguage().is(PhpLanguage.INSTANCE)) {
+            text = text.replace("$", "");
+        }
+
         if(text == null) {
             return null;
         }
 
         try {
-            ThesaurusDownloader downloader = new MashapeDownloader(Configuration.MASHAPE_API_KEY);
+            ThesaurusDownloader downloader = new BigHugeThesaurusDownloader(Configuration.BIG_HUGE_THESAURUS_API_KEY);
             ContainerUtil.addAllNotNull(results, downloader.downloadThesaurusList(text));
 
             return SuggestedNameInfo.NULL_INFO;

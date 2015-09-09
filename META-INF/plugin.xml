@@ -1,44 +1,49 @@
 <idea-plugin version="2">
-  <id>net.tweakers.intellij.thesaurus</id>
-  <name>Thesaurus</name>
-  <version>1.0</version>
-  <vendor email="pascal.de.vink@gmail.com" url="https://github.com/pascaldevink">Pascal de Vink</vendor>
+    <id>net.tweakers.intellij.thesaurus</id>
+    <name>Thesaurus</name>
+    <version>1.0</version>
+    <vendor email="pascal.de.vink@gmail.com" url="https://github.com/pascaldevink">Pascal de Vink</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       Lookup a synonym for the word under the cursor for easier naming of your variable,
       parameters, methods and classes. Can be used to replace text in a variable, or during renaming.
       ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       First version
       ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="133"/>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="133"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <depends>com.intellij.modules.lang</depends>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.jetbrains.php</depends>
+    <depends>com.intellij.modules.platform</depends>
 
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
 
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
+    <project-components>
+        <!-- Add your project components here -->
+    </project-components>
 
-  <actions>
-    <!-- Add your actions here -->
-      <action id="PascalDeVink.lookupThesaurus" class="nl.pascaldevink.intellij.thesaurus.action.ThesaurusAction" text="_Thesaurus"
-              description="Lookup a synonym of a selected word using a thesaurus">
-          <add-to-group group-id="RefactoringMenu" anchor="last"/>
-      </action>
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+        <action id="PascalDeVink.thesaurusLookup" class="nl.pascaldevink.intellij.thesaurus.action.ThesaurusAction"
+                text="_Thesaurus"
+                description="Lookup a synonym of a selected word using a thesaurus">
+            <add-to-group group-id="RefactoringMenu" anchor="last"/>
+        </action>
+    </actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-      <nameSuggestionProvider implementation="nl.pascaldevink.intellij.thesaurus.extension.ThesaurusSuggestionProvider" id="Thesaurus" />
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <nameSuggestionProvider
+                implementation="nl.pascaldevink.intellij.thesaurus.extension.ThesaurusSuggestionProvider"
+                id="PascalDeVink.thesaurusSuggestions"/>
+    </extensions>
 </idea-plugin>
