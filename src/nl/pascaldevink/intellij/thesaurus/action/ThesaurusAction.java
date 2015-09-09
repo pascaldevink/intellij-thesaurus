@@ -11,15 +11,11 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.source.tree.ElementType;
-import com.intellij.psi.tree.IElementType;
-import com.jetbrains.php.lang.lexer.PhpTokenTypes;
-import com.jetbrains.php.lang.psi.PhpElementType;
 import nl.pascaldevink.intellij.thesaurus.config.Configuration;
 import nl.pascaldevink.intellij.thesaurus.downloader.BigHugeThesaurusDownloader;
 import nl.pascaldevink.intellij.thesaurus.downloader.ThesaurusDownloader;
+import nl.pascaldevink.intellij.thesaurus.helper.ElementTypeHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -90,33 +86,7 @@ public class ThesaurusAction extends AnAction
             return false;
         }
 
-        if (editor.getSelectionModel().hasSelection()) {
-            return true;
-        }
-
-        int offset = editor.getCaretModel().getOffset();
-        PsiElement elementAt = psiFile.findElementAt(offset);
-
-        if (elementAt == null || elementAt.getNode() == null)
-            return false;
-
-        if (elementAt.getNode().getElementType() instanceof PhpElementType) {
-            IElementType elementType = elementAt.getNode().getElementType();
-            if (elementType != PhpTokenTypes.VARIABLE_NAME &&
-                elementType != PhpTokenTypes.STRING_LITERAL &&
-                elementType != PhpTokenTypes.STRING_LITERAL_SINGLE_QUOTE)
-            {
-                return false;
-            }
-        } else {
-            IElementType elementType = elementAt.getNode().getElementType();
-            if (elementType != ElementType.STRING_LITERAL)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return ElementTypeHelper.canUseThesaurus(editor, psiFile);
     }
 
     private List<String> downloadSynonyms(String originalWord) throws IOException {

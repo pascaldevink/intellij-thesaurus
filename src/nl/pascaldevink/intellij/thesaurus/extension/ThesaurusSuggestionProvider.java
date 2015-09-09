@@ -27,7 +27,7 @@ public class ThesaurusSuggestionProvider implements NameSuggestionProvider
             text = ((PsiNamedElement)element).getName();
         }
 
-        if (element.getLanguage().is(PhpLanguage.INSTANCE)) {
+        if (element.getLanguage().getID().equals("PHP")) {
             text = text.replace("$", "");
         }
 

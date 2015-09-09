@@ -1,6 +1,5 @@
 package nl.pascaldevink.intellij.thesaurus.action;
 
-import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -10,10 +9,12 @@ import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.refactoring.RefactoringFactory;
 import com.intellij.refactoring.RenameRefactoring;
 import com.intellij.refactoring.openapi.impl.RefactoringFactoryImpl;
 import com.intellij.usageView.UsageInfo;
+import nl.pascaldevink.intellij.thesaurus.helper.ElementTypeHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class ThesaurusListPopupStep extends BaseListPopupStep
@@ -34,8 +35,11 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
             return super.onChosen(selectedValue, finalChoice);
         }
 
-//        replaceWordSimple((CharSequence) selectedValue);
-        replaceWordRefactoring((String) selectedValue);
+        if (ElementTypeHelper.canUseRefactoring(editor, psiFile)) {
+            replaceWordRefactoring((String) selectedValue);
+        } else {
+            replaceWordSimple((CharSequence) selectedValue);
+        }
 
         return super.onChosen(selectedValue, finalChoice);
     }
@@ -75,9 +79,18 @@ public class ThesaurusListPopupStep extends BaseListPopupStep
         PsiElement elementAt = psiFile.findElementAt(offset);
 
         RefactoringFactory refactoringFactory = RefactoringFactoryImpl.getInstance(project);
-        RenameRefactoring rename = refactoringFactory.createRename(elementAt.getParent(), selectedValue);
+        RenameRefactoring rename = refactoringFactory.createRename(findNamedElement(elementAt), selectedValue);
 
         UsageInfo[] usages = rename.findUsages();
         rename.doRefactoring(usages);
+    }
+
+    private PsiElement findNamedElement(PsiElement element)
+    {
+        if (element instanceof PsiNamedElement) {
+            return element;
+        }
+
+        return findNamedElement(element.getParent());
     }
 }
