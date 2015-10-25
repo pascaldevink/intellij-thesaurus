@@ -1,5 +1,5 @@
 <idea-plugin version="2">
-    <id>nl.pascaldevink.intellij.thesaurus</id>
+    <id>net.tweakers.intellij.thesaurus</id>
     <name>Thesaurus</name>
     <version>2.0.1</version>
     <vendor email="pascal.de.vink@gmail.com" url="https://github.com/pascaldevink">Pascal de Vink</vendor>
