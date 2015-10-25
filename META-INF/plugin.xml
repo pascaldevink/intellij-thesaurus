@@ -1,17 +1,32 @@
 <idea-plugin version="2">
-    <id>net.tweakers.intellij.thesaurus</id>
+    <id>nl.pascaldevink.intellij.thesaurus</id>
     <name>Thesaurus</name>
-    <version>2.0</version>
+    <version>2.0.1</version>
     <vendor email="pascal.de.vink@gmail.com" url="https://github.com/pascaldevink">Pascal de Vink</vendor>
 
     <description><![CDATA[
       <h1>Thesaurus</h1>
-
+      <p>
       Lookup a synonym for the word under the cursor for easier naming of your variable,
       parameters, methods and classes. Can be used to replace text in a variable, or during renaming.
+      </p>
+      <p>
+      To use it, do either of these:
+      <ul>
+        <li>select a piece of text and go to the Refactor menu. You'll find the Thesaurus option there now.</li>
+        <li>rename anything (such as a variable or class). The dropdown on the rename modal window will now list synonyms.</li>
+      </p>
+
+      To learn more, take a look at the repository: https://github.com/pascaldevink/intellij-thesaurus
       ]]></description>
 
     <change-notes><![CDATA[
+        <b>2.0.1</b>
+        <ul>
+            <li>Improved documentation</li>
+            <li>Fixed namespacing issue</li>
+        </ul>
+
         <b>2.0</b>
         <ul>
             <li>Complete overhaul with added support for PHPStorm on top of IntelliJ IDEA.</li>
